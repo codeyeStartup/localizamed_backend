@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>Cadastro Clínicas</title>
+		
+		<!-- JQuery -->
+		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	
+		<!-- incluindo css -->
+		<link href="css/style.css" rel="stylesheet">
+
+		<script>
+			$(document).ready(function(){
+
+
+				$('#btn-publicar').click(function(){
+
+					// criar um formData
+					var formData = new FormData();
+                    var nome = document.getElementById("nome").value;
+                    var razao_social = document.getElementById("razao_social").value;
+                    var email = document.getElementById("email").value;
+                    var site = document.getElementById("site").value;
+					var cnpj = document.getElementById("cnpj").value;
+					var latitude = document.getElementById("latitude").value;                   
+					var longitude = document.getElementById("longitude").value;
+					var descricao = document.getElementById("descricao").value;
+					var cidade = document.getElementById("cidade").value;
+					var bairro = document.getElementById("bairro").value;
+					var uf = document.getElementById("uf").value;
+					var fone_1 = document.getElementById("fone_1").value;
+					var fone_2 = document.getElementById("fone_2").value;
+					var caminho_foto = document.getElementById("caminho_foto").files[0];
+					
+
+                    formData.append("nome", nome);
+                    formData.append("razao_social", razao_social);
+					formData.append("email", email);
+					formData.append("site", site);
+					formData.append("cnpj", cnpj);
+					formData.append("latitude", latitude);
+					formData.append("longitude", longitude);
+					formData.append("descricao", descricao);
+					formData.append("cidade", cidade);
+					formData.append("bairro", bairro);
+					formData.append("uf", uf);
+					formData.append("fone_1", fone_1);
+					formData.append("fone_2", fone_2);
+                    formData.append("caminho_foto", caminho_foto);
+
+					// criar xmlhttprequest
+					var xhr = new XMLHttpRequest();
+
+					// verificar as mudanças de estado
+					xhr.onreadystatechange = function(){
+						if(xhr.readyState == 4){
+							var resposta = xhr.responseText;
+							document.getElementById('mensagem').innerHTML = resposta;
+						}
+					}
+
+					//fazer o envio do nosso request
+					xhr.open("POST", "http://localhost:8081/clinicas");
+					xhr.send(formData);
+				});
+
+			});
+		</script>
+
+	</head>
+
+	<body>
+
+		<div class="container">
+			<div class="col-md-2"></div>
+			<div class="col-md-8" id="container_timeline"></div>
+			
+		</div>
+
+		<!-- <div class="container" style="display:none" id="container_form"> -->
+		<div class="container" id="container_form">
+			<div class="panel panel-default">
+
+			<div class="panel-heading"><h4>Cadastrar uma clínica</h4></div>
+			
+			<div class="panel-body">
+                    <div class="form-group">
+                            <input type="text" name="nome" id="nome" class="form-control" placeholder="nome" autocomplete="off">
+							<input type="text" name="razao_social" id="razao_social" class="form-control" placeholder="razao_social" autocomplete="off">							
+							<input type="text" name="email" id="email" class="form-control" placeholder="email" autocomplete="off">
+							<input type="text" name="site" id="site" class="form-control" placeholder="site" autocomplete="off">
+							<input type="text" name="cnpj" id="cnpj" class="form-control" placeholder="cnpj" autocomplete="off">
+							<input type="text" name="latitude" id="latitude" class="form-control" placeholder="latitude" autocomplete="off">
+							<input type="text" name="longitude" id="longitude" class="form-control" placeholder="longitude" autocomplete="off">
+							<input type="text" name="descricao" id="descricao" class="form-control" placeholder="descricao" autocomplete="off">
+							<input type="text" name="cidade" id="cidade" class="form-control" placeholder="cidade" autocomplete="off">
+							<input type="text" name="bairro" id="bairro" class="form-control" placeholder="bairro" autocomplete="off">
+							<input type="text" name="uf" id="uf" class="form-control" placeholder="uf - 2 caracteres" autocomplete="off">
+							<input type="text" name="fone_1" id="fone_1" class="form-control" placeholder="telefone 1" autocomplete="off">
+                            <input type="text" name="fone_2" id="fone_2" class="form-control" placeholder="telefone 2" autocomplete="off">
+                        </div>
+				<div class="form-group">
+					<input type="file" name="caminho_foto" id="caminho_foto" class="form-control-file">
+				</div>
+
+				
+
+				<div class="form-group">
+					<button class="btn btn-success" id="btn-publicar">Publicar</button>
+					<button class="btn btn-danger" id="btn-cancelar-publicacao">Cancelar</button>
+				</div>
+				<div id="mensagem"></div>
+			</div>
+		</div>
+	</body>
+</html>

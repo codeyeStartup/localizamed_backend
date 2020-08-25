@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>Cadastro exames/consultas</title>
+		
+		<!-- JQuery -->
+		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	
+		<!-- incluindo css -->
+		<link href="css/style.css" rel="stylesheet">
+
+		<script>
+			$(document).ready(function(){
+
+				$('#btn-publicar').click(function(){
+
+					// criar um formData
+					var formData = new FormData();
+                    var nome = document.getElementById("nome").value;
+                    var tipo = document.getElementById("tipo").value;
+
+                    formData.append("nome", nome);
+                    formData.append("tipo", tipo);
+
+					// criar xmlhttprequest
+					var xhr = new XMLHttpRequest();
+
+					// verificar as mudanças de estado
+					xhr.onreadystatechange = function(){
+						if(xhr.readyState == 4){
+							var resposta = xhr.responseText;
+							document.getElementById('mensagem').innerHTML = resposta;
+						}
+					}
+
+					//fazer o envio do nosso request
+					xhr.open("POST", "http://localhost:8081/exames_consultas");
+					xhr.send(formData);
+				});
+
+			});
+		</script>
+
+	</head>
+
+	<body>
+		<div class="container"  id="container_form">
+		<div class="panel panel-default">
+
+		<div class="panel-heading"><h4>AINDA PRECISA SER EDITADO!!!</h4></div>
+	
+
+		<div class="container">
+			<div class="col-md-2"></div>
+			<div class="col-md-8" id="container_timeline"></div>
+			
+		</div>
+
+
+		<div class="container"  id="container_form">
+			<div class="panel panel-default">
+			
+			<div class="panel-body">
+                    <div class="form-group">
+                            <input type="text" name="nome" id="nome" class="form-control" placeholder="nome" autocomplete="off">
+                            <input type="text" name="tipo" id="tipo" class="form-control" placeholder="digite E caso EXAME - C caso CONSULTA - S caso outro SERVIÇO QUALQUER" autocomplete="off">
+                          
+                        </div>
+				
+
+				
+
+				<div class="form-group">
+					<button class="btn btn-success" id="btn-publicar">Salvar</button>
+					<button class="btn btn-danger" id="btn-cancelar-publicacao">Cancelar</button>
+				</div>
+				<div id="mensagem"></div>
+			</div>
+		</div>
+	</body>
+</html>

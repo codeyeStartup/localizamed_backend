@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Redefinir Senha</title>
+
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            document.getElementById("btn-publicar").addEventListener("click", function (event) {
+
+                var formData = new FormData();
+                var senha = document.dados.senha.value;
+                var confirmaSenha = document.dados.confirmaSenha.value;
+                var ip = `http://192.168.0.103:8081`
+
+                formData.append("senha", senha);
+                formData.append("confirmaSenha", confirmaSenha)
+
+                // criar xmlhttprequest
+                var xhr = new XMLHttpRequest();
+
+                var urlString = window.location.href;
+                var url = new URL(urlString);
+                var email = url.searchParams.get("email");
+                if (senha == confirmaSenha) {
+                    xhr.open("PUT", `${ip}/update_pass/${email}`);
+                    xhr.send(formData);
+                    document.dados.action = 'update_pass_confirm.html';
+                }
+
+                if (senha.length < 6 || confirmaSenha.length < 6) {
+                    event.preventDefault();
+                    return alert('A senha deve conter no minimo 6 digitos');
+                } if (senha != confirmaSenha) {
+                    event.preventDefault();
+                    return alert('As senhas não correspondem');
+                }
+
+            });
+        });
+    </script>
+    <style>
+        body {
+            background-color: rgba(0, 150, 136, 0.4);
+            height: auto;
+            width: auto;
+            font-family: 'Arial';
+            align-items: center;
+        }
+
+        .container {
+            position: absolute;
+            top: 30%;
+            left: 40%;
+            margin: auto;
+            height: 30%;
+            width: 20%;
+            text-align: start;
+            align-items: center;
+            background-color: white;
+            color: black;
+            box-shadow: 5px 5px rgba(0, 0, 0, 0.3);
+            padding: 1em;
+            border-radius: 20px;
+        }
+
+        .inp {
+            position: relative;
+            margin: auto;
+            width: 100%;
+            max-width: 280px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        #senha {
+            width: 40%;
+            border: none;
+            padding: 1%;
+            background-color: none;
+            outline: none;
+            border-bottom: 1px solid grey;
+            transition: all 0.5s;
+        }
+
+        #senha:focus {
+            width: 100%;
+            border-bottom: 1px solid #009688;
+        }
+
+
+        .label {
+            position: absolute;
+            color: grey;
+            top: 0;
+            left: 0;
+            font-size: 10px;
+            font-weight: 500;
+            transform-origin: 0 0;
+            transform: translate3d(0, 0, 0);
+            transition: all .2s ease;
+            pointer-events: none;
+        }
+
+        #senha:focus+.label {
+            position: absolute;
+            color: #009688;
+            transform: translate3d(0, -12px, 0) scale(.80);
+        }
+
+        #senha:not(:placeholder-shown) {
+            width: 100%;
+        }
+
+        #senha:not(:placeholder-shown)+.label {
+            position: absolute;
+            transform: translate3d(0, -12px, 0) scale(.80);
+        }
+
+        #confirmaSenha {
+            width: 40%;
+            border: none;
+            padding: 1%;
+            background-color: none;
+            outline: none;
+            border-bottom: 1px solid grey;
+            transition: all 0.5s;
+        }
+
+        #confirmaSenha:focus {
+            width: 100%;
+            border-bottom: 1px solid #009688;
+        }
+
+        #confirmaSenha:focus+.label {
+            position: absolute;
+            color: #009688;
+            transform: translate3d(0, -12px, 0) scale(.80);
+        }
+
+        #confirmaSenha:not(:placeholder-shown)+.label {
+            width: 100%;
+            position: absolute;
+            transform: translate3d(0, -12px, 0) scale(.80);
+        }
+
+        #confirmaSenha:not(:placeholder-shown) {
+            width: 100%;
+        }
+
+        #btn-publicar {
+            position: relative;
+            padding: 5%;
+            left: 32%;
+            border: none;
+            outline: none;
+            transition: all 0.5s;
+            font-family: 'Arial';
+        }
+
+        #btn-publicar:hover {
+            background-color: #009688;
+            color: white;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container" id="container_form">
+        <div class="panel panel-default">
+
+            <div class="panel-heading">
+                <h3>Alterar senha</h3>
+            </div>
+
+            <div class="panel-body">
+                <form name="dados">
+                    <div class="form-group">
+                        <p>
+                            <label class="inp">
+                                <input type="password" name="senha" id="senha" class="form-control" required="required"
+                                    placeholder="&nbsp;" autocomplete="off">
+                                <span class="label">Senha</span>
+                            </label>
+                        </p>
+                        <label class="inp">
+                            <input type="password" name="confirmaSenha" id="confirmaSenha" class="form-control"
+                                required="required" placeholder="&nbsp;" autocomplete="off">
+                            <span class="label">Confirmar Senha</span>
+                        </label>
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <input class="btn btn-success" id="btn-publicar" type="submit" value="Confirmar">
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+</body>
+
+</html>
