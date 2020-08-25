@@ -4,7 +4,7 @@
   "description": "localizamed_app",
   "main": "app.js",
   "engines": {
-  	"node": "v12.14.1"
+    "node": "v12.14.1"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "nodemon app", 
+    "dev": "nodemon app",
     "start": "node app.js"
   },
   "author": "",
