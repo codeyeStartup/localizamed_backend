@@ -30,7 +30,7 @@ usuarioRouter.post("/send_mail", async (req, res, next) => {
       })
     );
 
-    const url = `http://${process.env.IP_ADDRESS}/update_pass_get/?email=${req.body.email}`;
+    const url = `http://${process.env.IP_ADDRESS}update_pass_get/?email=${req.body.email}`;
     const mailOptions = {
       from: "Localizamed <no-reply@localizamed.com.br>",
       to: req.body.email,
