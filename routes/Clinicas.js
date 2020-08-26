@@ -153,8 +153,8 @@ clinicasRouter.put("/clinica_image/:id", verifyJWT, (req, res) => {
     });
 });
 
-//função de LOGIN
-clinicasRouter.post("/loginClinica", verifyJWT, (req, res, next) => {
+//TODO função de LOGIN
+clinicasRouter.post("/loginClinica", (req, res, next) => {
   async function Login() {
     try {
       var user = await Clinicas.findOne({ email: req.body.email }).exec();

@@ -214,7 +214,7 @@ usuarioRouter.patch("/usuario_image/:id", verifyJWT, async (req, res, next) => {
 });
 
 //Rota de INSERIR dados no banco
-usuarioRouter.post("/usuarios", verifyJWT, (req, res, next) => {
+usuarioRouter.post("/usuarios", (req, res, next) => {
   async function salvaUsuario() {
     const usuarios = new Usuarios({
       nome: req.body.nome.trim(),
@@ -252,7 +252,7 @@ usuarioRouter.post("/usuarios", verifyJWT, (req, res, next) => {
 });
 
 //Rota de LOGIN
-usuarioRouter.post("/login", verifyJWT, (req, res, next) => {
+usuarioRouter.post("/login", (req, res, next) => {
   async function Login() {
     try {
       const user = await Usuarios.findOne({ email: req.body.email }).exec();
