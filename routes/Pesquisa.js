@@ -1,9 +1,11 @@
 const express = require('express');
+
 const Clinicas = require("../models/clinicas");
+const verifyJWT = require('../utils/verifyJWT');
 
 const pesquisaRouter = express.Router();
 
-pesquisaRouter.post('/search_clinica', async (req, res, next) => {
+pesquisaRouter.post('/search_clinica', verifyJWT, async (req, res, next) => {
 
 	const search = req.body.search;
 

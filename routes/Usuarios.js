@@ -12,7 +12,7 @@ const verifyJWT = require("../utils/verifyJWT");
 const usuarioRouter = express.Router();
 
 //Rota para enviar EMAIL DE RECUPERAÇÃO DE SENHA
-usuarioRouter.post("/send_mail", async (req, res, next) => {
+usuarioRouter.post("/send_mail", verifyJWT, async (req, res, next) => {
   try {
     const user = await Usuarios.findOne({ email: req.body.email }).exec();
     if (!user) {
@@ -78,7 +78,7 @@ usuarioRouter.post("/send_mail", async (req, res, next) => {
   }
 });
 
-usuarioRouter.put("/update_pass/:email", async (req, res, next) => {
+usuarioRouter.put("/update_pass/:email", verifyJWT, async (req, res, next) => {
   try {
     Usuarios.findOneAndUpdate(
       { email: req.params.email },
@@ -97,7 +97,7 @@ usuarioRouter.put("/update_pass/:email", async (req, res, next) => {
   }
 });
 
-usuarioRouter.get("/update_pass_get", async (req, res, next) => {
+usuarioRouter.get("/update_pass_get", verifyJWT, async (req, res, next) => {
   return res.sendFile(path.join(__dirname + "/../public/index.html"));
 });
 
@@ -175,7 +175,7 @@ usuarioRouter.get("/usuarioFindOne/:email", verifyJWT, (req, res, next) => {
 }); */
 
 //Rota para ATUALIZAR FOTO DE PERFIL do usuario
-usuarioRouter.patch("/usuario_image/:id", async (req, res, next) => {
+usuarioRouter.patch("/usuario_image/:id", verifyJWT, async (req, res, next) => {
   cloudinary.config(cloud);
 
   async function AtualizarFotoUsuario() {
@@ -214,7 +214,7 @@ usuarioRouter.patch("/usuario_image/:id", async (req, res, next) => {
 });
 
 //Rota de INSERIR dados no banco
-usuarioRouter.post("/usuarios", (req, res, next) => {
+usuarioRouter.post("/usuarios", verifyJWT, (req, res, next) => {
   async function salvaUsuario() {
     const usuarios = new Usuarios({
       nome: req.body.nome.trim(),
@@ -252,7 +252,7 @@ usuarioRouter.post("/usuarios", (req, res, next) => {
 });
 
 //Rota de LOGIN
-usuarioRouter.post("/login", (req, res, next) => {
+usuarioRouter.post("/login", verifyJWT, (req, res, next) => {
   async function Login() {
     try {
       const user = await Usuarios.findOne({ email: req.body.email }).exec();
@@ -282,7 +282,7 @@ usuarioRouter.post("/login", (req, res, next) => {
 });
 
 //Rota de DELETAR um usuário
-usuarioRouter.delete("/usuario/:id", (req, res, next) => {
+usuarioRouter.delete("/usuario/:id", verifyJWT, (req, res, next) => {
   async function deletarUsuario() {
     Usuarios.findByIdAndDelete(req.params.id)
       .then((usuario) => {
@@ -304,7 +304,7 @@ usuarioRouter.delete("/usuario/:id", (req, res, next) => {
 });
 
 //Rota de UPDATE do usuario
-usuarioRouter.patch("/usuarioUpdate/:email", (req, res, next) => {
+usuarioRouter.put("/usuarioUpdate/:email", verifyJWT, (req, res, next) => {
   async function atualizarUsuario() {
     try {
       Usuarios.findOneAndUpdate(

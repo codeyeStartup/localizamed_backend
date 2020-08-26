@@ -4,11 +4,12 @@ const cloudinary = require("cloudinary").v2;
 
 const Clinicas = require("../models/clinicas");
 const { cloud } = require("../utils/consts");
+const verifyJWT = require("../utils/verifyJWT");
 
 const clinicasRouter = express.Router();
 
 //função de RETORNAR TODAS as CLÍNICAS
-clinicasRouter.get("/clinicas", (req, res, next) => {
+clinicasRouter.get("/clinicas", verifyJWT, (req, res, next) => {
   async function AllClinicas() {
     Clinicas.find({}, (erro, dados) => {
       if (erro) {
@@ -22,19 +23,8 @@ clinicasRouter.get("/clinicas", (req, res, next) => {
   AllClinicas();
 });
 
-/*ROTA DE TESTE - NÃO APAGAR ESSE BLOCO DE COMENTÁRIO!!! 
-clinicasRouter.get('/clinica2', async (req, res, next) => {
-    try{
-        const clinicas = await Clinicas.find().populate('medico.medicoId');
-
-        return res.send({ clinicas });
-    } catch (erro){
-        return res.status(417).send({ erro: 'Erro ao carregar clinicas' });
-    }
-});
-//--< ROTA DE TESTE */
-
-clinicasRouter.get("/clinicaLastThree", async (req, res, next) => {
+//funcao que retorna tres ultimas clinicas
+clinicasRouter.get("/clinicaLastThree", verifyJWT, async (req, res, next) => {
   try {
     const clinicas = await Clinicas.find().sort({ _id: -1 }).limit(3);
 
@@ -45,7 +35,7 @@ clinicasRouter.get("/clinicaLastThree", async (req, res, next) => {
 });
 
 //função para RETORNAR UMA ÚNICA CLÍNICA
-clinicasRouter.get("/clinica/:id", (req, res, next) => {
+clinicasRouter.get("/clinica/:id", verifyJWT, (req, res, next) => {
   async function findClinicas() {
     Clinicas.findById(req.params.id)
       .populate("medico.medicoId")
@@ -66,7 +56,7 @@ clinicasRouter.get("/clinica/:id", (req, res, next) => {
 });
 
 //Eu quero queijo
-clinicasRouter.get("/clinicasAll", (req, res, next) => {
+clinicasRouter.get("/clinicasAll", verifyJWT, (req, res, next) => {
   async function AllClinicas() {
     Clinicas.find({}, (erro, dados) => {
       if (erro) {
@@ -83,7 +73,7 @@ clinicasRouter.get("/clinicasAll", (req, res, next) => {
 });
 
 //função de INSERIR dados no banco
-clinicasRouter.post("/clinicas", (req, res, next) => {
+clinicasRouter.post("/clinicas", verifyJWT, (req, res, next) => {
   const date = new Date();
   time_stamp = date.getTime();
 
@@ -113,7 +103,7 @@ clinicasRouter.post("/clinicas", (req, res, next) => {
         fone_2: req.body.fone_2,
         cnpj: req.body.cnpj,
         descricao: req.body.descricao,
-        caminho_foto: url_imagem,
+        // caminho_foto: url_imagem,
       });
 
       try {
@@ -131,7 +121,7 @@ clinicasRouter.post("/clinicas", (req, res, next) => {
 });
 
 //funcao de atualizar imagem da clinica
-clinicasRouter.put("/clinica_image/:id", (req, res) => {
+clinicasRouter.put("/clinica_image/:id", verifyJWT, (req, res) => {
   cloudinary.config(cloud);
 
   const { id } = req.params;
@@ -163,23 +153,8 @@ clinicasRouter.put("/clinica_image/:id", (req, res) => {
     });
 });
 
-//rota das imagens
-// clinicasRouter.get("/imagensClinica/:caminho_foto", (req, res, next) => {
-//   const img = req.params.caminho_foto;
-
-//   fs.readFile("./images/clinicas_img/" + img, function (erro, content) {
-//     if (erro) {
-//       res.status(400).json(erro);
-//       return;
-//     }
-
-//     res.writeHead(200, { "content-type": "image/jpg" });
-//     res.end(content);
-//   });
-// });
-
 //função de LOGIN
-clinicasRouter.post("/loginClinica", (req, res, next) => {
+clinicasRouter.post("/loginClinica", verifyJWT, (req, res, next) => {
   async function Login() {
     try {
       var user = await Clinicas.findOne({ email: req.body.email }).exec();
@@ -200,7 +175,7 @@ clinicasRouter.post("/loginClinica", (req, res, next) => {
 });
 
 //função de DELETAR uma CLÍNICA
-clinicasRouter.delete("/clinicas/:id", (req, res, next) => {
+clinicasRouter.delete("/clinicas/:id", verifyJWT, (req, res, next) => {
   async function deletarClinicas() {
     Clinicas.findByIdAndDelete(req.params.id)
       .then((clinicas) => {
@@ -222,7 +197,7 @@ clinicasRouter.delete("/clinicas/:id", (req, res, next) => {
 });
 
 //função de ATUALIZAR clinicas
-clinicasRouter.put("/clinicas/:id", (req, res, next) => {
+clinicasRouter.put("/clinicas/:id", verifyJWT, (req, res, next) => {
   async function atualizarClinicas() {
     try {
       Clinicas.findByIdAndUpdate(req.params.id, req.body, function (erro) {
