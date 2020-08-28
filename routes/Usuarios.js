@@ -12,7 +12,7 @@ const verifyJWT = require("../utils/verifyJWT");
 const usuarioRouter = express.Router();
 
 //Rota para enviar EMAIL DE RECUPERAÇÃO DE SENHA
-usuarioRouter.post("/send_mail", verifyJWT, async (req, res, next) => {
+usuarioRouter.post("/send_mail", async (req, res, next) => {
   try {
     const user = await Usuarios.findOne({ email: req.body.email }).exec();
     if (!user) {
@@ -78,7 +78,8 @@ usuarioRouter.post("/send_mail", verifyJWT, async (req, res, next) => {
   }
 });
 
-usuarioRouter.put("/update_pass/:email", verifyJWT, async (req, res, next) => {
+//rota de atualizar a senha
+usuarioRouter.put("/update_pass/:email", async (req, res, next) => {
   try {
     Usuarios.findOneAndUpdate(
       { email: req.params.email },
@@ -97,7 +98,7 @@ usuarioRouter.put("/update_pass/:email", verifyJWT, async (req, res, next) => {
   }
 });
 
-usuarioRouter.get("/update_pass_get", verifyJWT, async (req, res, next) => {
+usuarioRouter.get("/update_pass_get", async (req, res, next) => {
   return res.sendFile(path.join(__dirname + "/../public/index.html"));
 });
 
@@ -217,19 +218,19 @@ usuarioRouter.patch("/usuario_image/:id", verifyJWT, async (req, res, next) => {
 usuarioRouter.post("/usuarios", (req, res, next) => {
   async function salvaUsuario() {
     const usuarios = new Usuarios({
-      nome: req.body.nome.trim(),
+      nome: req.body.nome,
       email: req.body.email.trim(),
       data_nascimento: req.body.data_nascimento,
       senha: bcrypt.hashSync(req.body.senha.trim(), 10),
       //senha: req.body.senha,
       //logradouro: req.body.logradouro,
       //bairro: req.body.bairro,
-      cidade: req.body.cidade.trim(),
-      uf: req.body.uf.trim(),
-      fone_1: req.body.fone_1.trim(),
-      fone_2: req.body.fone_2.trim(),
-      cpf: req.body.cpf.trim(),
-      rg: req.body.rg.trim(),
+      cidade: req.body.cidade,
+      uf: req.body.uf,
+      fone_1: req.body.fone_1,
+      fone_2: req.body.fone_2,
+      cpf: req.body.cpf,
+      rg: req.body.rg,
       //caminho_foto: req.body.caminho_foto,
     });
 
@@ -259,6 +260,7 @@ usuarioRouter.post("/login", (req, res, next) => {
       if (!user) {
         return res.status(400).send({ message: "Email inválido/inexistente" });
       }
+      console.log(bcrypt.compareSync(req.body.senha, user.senha)  )
       if (!bcrypt.compareSync(req.body.senha, user.senha)) {
         return res.status(400).send({ message: "Senha Incorreta" });
       }
