@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
+  //equivale ao 'nome_fantasia'
   nome: {
     type: String,
     required: true,
@@ -52,10 +53,20 @@ const UserSchema = new Schema({
     required: true,
     maxlength: 50
   },
-  bairro: {
+  logradouro: {
     type: String,
     required: true,
     maxlength: 50
+  },
+  bairro: {
+    type: String, 
+    required: true, 
+    maxLength: 50
+  },
+  numero: {
+    type: String, 
+    required: true, 
+    maxLength: 11
   },
   uf: {
     type: String,
