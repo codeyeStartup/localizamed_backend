@@ -6,24 +6,44 @@ const smtpTrans = require("nodemailer-smtp-transport");
 const path = require("path");
 const jwt = require("jsonwebtoken");
 const { cloud } = require("../utils/consts");
+const { google } = require("googleapis");
+const OAuth2 = google.auth.OAuth2;
 
 const Usuarios = require("../models/usuarios");
 const verifyJWT = require("../utils/verifyJWT");
 const usuarioRouter = express.Router();
 
+const oauth2Client = new OAuth2(
+  process.env.CLIENT_ID,
+  process.env.SECRET_KEY,
+  "https://developers.google.com/oauthplayground"
+);
+
+oauth2Client.setCredentials({
+  refresh_token: process.env.REFRESH_TOKEN,
+});
+const accessToken = oauth2Client.getAccessToken();
+
 //Rota para enviar EMAIL DE RECUPERAÇÃO DE SENHA
 usuarioRouter.post("/send_mail", async (req, res, next) => {
+  console.log('ovo')
   try {
     const user = await Usuarios.findOne({ email: req.body.email }).exec();
     if (!user) {
       return res.status(400).send({ message: "Email inválido/inexistente" });
     }
 
+
     const transporter = nodemailer.createTransport(
       smtpTrans({
         service: "gmail",
         auth: {
+          type: "OAuth2",
           user: process.env.EMAIL,
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.SECRET_KEY,
+          refreshToken: process.env.REFRESH_TOKEN,
+          accessToken,
           pass: process.env.PASSWORD,
         },
         tls: { rejectUnauthorized: false },
@@ -260,7 +280,7 @@ usuarioRouter.post("/login", (req, res, next) => {
       if (!user) {
         return res.status(400).send({ message: "Email inválido/inexistente" });
       }
-      console.log(bcrypt.compareSync(req.body.senha, user.senha)  )
+      console.log(bcrypt.compareSync(req.body.senha, user.senha));
       if (!bcrypt.compareSync(req.body.senha, user.senha)) {
         return res.status(400).send({ message: "Senha Incorreta" });
       }
