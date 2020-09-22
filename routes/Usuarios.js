@@ -32,7 +32,7 @@ usuarioRouter.post("/send_mail", async (req, res, next) => {
     if (!user) {
       return res.status(400).send({ message: "Email inválido/inexistente" });
     }
-    const url = `https://${process.env.IP_ADDRESS}update_pass_get/?email=${req.body.email}`;
+    const url = `http://${process.env.IP_ADDRESS}update_pass_get/?email=${req.body.email}`;
 
     nodeoutlook.sendEmail({
       auth: {
