@@ -23,6 +23,25 @@ clinicasRouter.get("/clinicas", verifyJWT, (req, res, next) => {
   AllClinicas();
 });
 
+// query de medicos por clinicas
+clinicasRouter.get("/search_medico_clinica", verifyJWT, (req, res, next) => {
+  async function AllClinicas() {
+    console.log(req.body)
+    Clinicas.find(
+      { "medico.medicoId": { _id: req.body.search } },
+      (erro, dados) => {
+        if (erro) {
+          res.status(417).send({ message: "Nenhum registro recebido" });
+        }
+        res.status(200);
+        res.json(dados);
+      }
+    ).select('nome _id');
+  }
+
+  AllClinicas();
+});
+
 //funcao que retorna tres ultimas clinicas
 clinicasRouter.get("/clinicaLastThree", verifyJWT, async (req, res, next) => {
   try {
