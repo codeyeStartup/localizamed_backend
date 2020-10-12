@@ -14,17 +14,6 @@ const Usuarios = require("../models/usuarios");
 const verifyJWT = require("../utils/verifyJWT");
 const usuarioRouter = express.Router();
 
-const oauth2Client = new OAuth2(
-  process.env.CLIENT_ID,
-  process.env.SECRET_KEY,
-  "https://developers.google.com/oauthplayground"
-);
-
-oauth2Client.setCredentials({
-  refresh_token: process.env.REFRESH_TOKEN,
-});
-const accessToken = oauth2Client.getAccessToken();
-
 //Rota para enviar EMAIL DE RECUPERAÇÃO DE SENHA
 usuarioRouter.post("/send_mail", async (req, res, next) => {
   try {
@@ -252,8 +241,18 @@ usuarioRouter.post("/usuarios", async (req, res, next) => {
       // rg,
     });
 
-    await usuarios.save();
-    res.status(201).send({ message: "Cadastrado com sucesso!" });
+    const userData = await usuarios.save();
+    const { _id } = userData;
+    const token = jwt.sign({ _id }, process.env.JWT_PASS, {
+      expiresIn: "365 days",
+    });
+    const refreshToken = jwt.sign({ _id }, process.env.JWT_PASS, {
+      expiresIn: "365 days",
+    });
+
+    res
+      .status(201)
+      .json({ message: "Cadastrado com sucesso!", token, refreshToken, userData: { _id, email } });
   } catch (erro) {
     res.status(400).send({ message: erro.message });
   }
