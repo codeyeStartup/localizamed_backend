@@ -24,7 +24,7 @@ clinicasRouter.get("/clinicas", verifyJWT, (req, res, next) => {
 });
 
 // query de medicos por clinicas
-clinicasRouter.get("/search_medico_clinica", verifyJWT, (req, res, next) => {
+clinicasRouter.post("/search_medico_clinica", verifyJWT, (req, res, next) => {
   async function AllClinicas() {
     console.log(req.body)
     Clinicas.find(
