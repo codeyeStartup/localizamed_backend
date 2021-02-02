@@ -1,16 +1,15 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
 const cloudinary = require("cloudinary").v2;
-const smtpTrans = require("nodemailer-smtp-transport");
 const path = require("path");
 const jwt = require("jsonwebtoken");
-const { cloud } = require("../utils/consts");
 const { google } = require("googleapis");
-const OAuth2 = google.auth.OAuth2;
 const nodeoutlook = require("nodejs-nodemailer-outlook");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.CLIENT_ID);
 
 const Usuarios = require("../models/usuarios");
+const { cloud } = require("../utils/consts");
 const verifyJWT = require("../utils/verifyJWT");
 const usuarioRouter = express.Router();
 
@@ -250,9 +249,12 @@ usuarioRouter.post("/usuarios", async (req, res, next) => {
       expiresIn: "365 days",
     });
 
-    res
-      .status(201)
-      .json({ message: "Cadastrado com sucesso!", token, refreshToken, userData: { _id, email } });
+    res.status(201).json({
+      message: "Cadastrado com sucesso!",
+      token,
+      refreshToken,
+      userData: { _id, email },
+    });
   } catch (erro) {
     res.status(400).send({ message: erro.message });
   }
@@ -333,6 +335,36 @@ usuarioRouter.put("/usuarioUpdate/:email", verifyJWT, (req, res, next) => {
   }
 
   atualizarUsuario();
+});
+
+//Rota de login google
+usuarioRouter.post("/auth_google", async (req, res) => {
+  try {
+    const { profileObj: { email, name, googleId, imageUrl } = {} } = req.body;
+
+    const user = await Usuarios.findOne({ email });
+
+    let loginUser = {};
+
+    if (!user) {
+      loginUser = await Usuarios({
+        nome: name,
+        email,
+        senha: bcrypt.hashSync(googleId.trim(), 10),
+      }).save();
+    } else {
+      loginUser = await Usuarios.findOneAndUpdate({ email }, { nome: name });
+    }
+    const { _id } = loginUser;
+
+    const token = jwt.sign({ _id }, process.env.JWT_PASS, {
+      expiresIn: "365 days",
+    });
+    
+    return res.status(201).json({ token, userData: { _id, email, imageUrl, loggedByGoogle: true } });
+  } catch (erro) {
+    res.status(401).send({ message: erro });
+  }
 });
 
 module.exports = usuarioRouter;
