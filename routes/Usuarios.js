@@ -353,7 +353,7 @@ usuarioRouter.post("/auth_google", async (req, res) => {
         senha: bcrypt.hashSync(googleId.trim(), 10),
       }).save();
     } else {
-      loginUser = await Usuarios.findOneAndUpdate({ email }, { nome: name });
+      loginUser = await Usuarios.findOneAndUpdate({ email }, { nome: name, caminho_foto: imageUrl  });
     }
     const { _id } = loginUser;
 
@@ -361,7 +361,7 @@ usuarioRouter.post("/auth_google", async (req, res) => {
       expiresIn: "365 days",
     });
     
-    return res.status(201).json({ token, userData: { _id, email, imageUrl, loggedByGoogle: true } });
+    return res.status(201).json({ token, userData: { _id, email } });
   } catch (erro) {
     res.status(401).send({ message: erro });
   }
