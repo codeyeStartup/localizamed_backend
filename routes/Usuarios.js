@@ -365,6 +365,6 @@ usuarioRouter.post("/auth_google", async (req, res) => {
   } catch (erro) {
     res.status(401).send({ message: erro });
   }
-});
+}); 
 
 module.exports = usuarioRouter;
