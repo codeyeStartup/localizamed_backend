@@ -340,7 +340,7 @@ usuarioRouter.put("/usuarioUpdate/:email", verifyJWT, (req, res, next) => {
 //Rota de login google
 usuarioRouter.post("/auth_google", async (req, res) => {
   try {
-    const { profileObj: { email, name, googleId, imageUrl } = {} } = req.body;
+    const { email, name, googleId, imageUrl } = req.body;
 
     const user = await Usuarios.findOne({ email });
 
@@ -351,6 +351,7 @@ usuarioRouter.post("/auth_google", async (req, res) => {
         nome: name,
         email,
         senha: bcrypt.hashSync(googleId.trim(), 10),
+        caminho_foto: imageUrl
       }).save();
     } else {
       loginUser = await Usuarios.findOneAndUpdate({ email }, { nome: name, caminho_foto: imageUrl  });
