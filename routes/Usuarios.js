@@ -340,10 +340,10 @@ usuarioRouter.put("/usuarioUpdate/:email", verifyJWT, (req, res, next) => {
 //Rota de login google
 usuarioRouter.post("/auth_google", async (req, res) => {
   try {
-    const { email, name, googleId, imageUrl } = req.body;
-    
+    const { email, name, googleId, imageUrl } = req.body;    
 
-    const user = await Usuarios.findOne({ email });
+    const user = await Usuarios.findOne({ email }); 
+    console.log('a')
 
     let loginUser = {};
 
