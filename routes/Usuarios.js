@@ -341,6 +341,7 @@ usuarioRouter.put("/usuarioUpdate/:email", verifyJWT, (req, res, next) => {
 usuarioRouter.post("/auth_google", async (req, res) => {
   try {
     const { email, name, googleId, imageUrl } = req.body;
+    
 
     const user = await Usuarios.findOne({ email });
 
